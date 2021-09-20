@@ -1,7 +1,9 @@
 import './sass/main.scss';
 import conuntrySample from './partials/country'
 import conuntrysSample from './partials/countrys'
+import fetchCountries from './fetchCountries'
 import notie from 'notie'
+import { VERSION } from 'lodash';
 var debounce = require('lodash.debounce');
 var PNotify = require('@pnotify/core');
 
@@ -23,32 +25,32 @@ function searchCountrys(evt){
         list.removeChild(country)
         return
     }else if(country){
-        console.log(country);
       list.removeChild(country)   
     }
     let valueInp = evt.target.value
-    
-    fetch(`https://restcountries.eu/rest/v2/name/${valueInp}`)
-    .then(res=>res.json())
+    fetchCountries(valueInp)
     .then(
-        
         country=>{
             
             if(country.length === 1){
                
-                list.insertAdjacentHTML('beforeend', conuntrySample(country))
+                list.innerHTML=conuntrySample(country)
             }else if(country.length>1&&country.length<=10){
-                list.insertAdjacentHTML('beforeend', conuntrysSample(country))
+                list.innerHTML=conuntrysSample(country)
                 
             }else if(country.length>10){
-                notie.alert({ type: 3, text: 'Too many matches found. Please enter a more specific query!', position: 'bottom' })
-                // PNotify.error({
-                //     text: 'Too many matches found. Please enter a more specific query!'
-                //   });
+                reject('There was an error :(');
+                
                     
             }
         })
-    .catch(error=>{console.log(error);})
+    .catch(error=>{
+        
+        console.log(error);
+        notie.alert({ type: 3, text: 'Произошла ошибочка :(', position: 'bottom' })
+        })
 }
 
-
+function errorLog(){
+    notie.alert({ type: 3, text: 'Произошла ошибочка :', position: 'bottom' })
+}
