@@ -5,6 +5,10 @@ import '@pnotify/core/dist/BrightTheme.css';
 defaultModules.set(PNotifyMobile, {});
 
 export default function fetchCountries(searchQuery) {
+  if (searchQuery === ' ' || searchQuery === '') {
+    error({ text: 'ВВЕДИ ЧТО-ТО!!!!!' });
+    return;
+  }
   return fetch(`https://restcountries.com/v3/name/${searchQuery}`)
     .then(res => {
       if (res.ok != true) {
